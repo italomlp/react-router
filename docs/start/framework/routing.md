@@ -65,6 +65,43 @@ export default [
 ] satisfies RouteConfig;
 ```
 
+### Typescript paths in routes definition
+
+You can also define your routes with Typescript paths. Let's say you have something like the following:
+
+```ts filename=app/routes.ts
+import {
+  type RouteConfig,
+  route,
+  index,
+} from "@react-router/dev/routes";
+
+export default [
+  index("~/pages/home.tsx"),
+  route("about", "~/pages/about.tsx"),
+] satisfies RouteConfig;
+```
+
+For that to work, you need to add a `resolve` config to your Vite configuration:
+
+```ts filename=vite.config.ts
+import path from 'path'
+
+import { reactRouter } from '@react-router/dev/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    reactRouter(),
+  ],
+  resolve: {
+    alias: {
+      '~': path.resolve(__dirname, 'some-folder-containing-pages-folder'),
+    },
+  },
+})
+```
+
 ## Route Modules
 
 The files referenced in `routes.ts` define each route's behavior:
