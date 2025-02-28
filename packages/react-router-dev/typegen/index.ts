@@ -25,9 +25,19 @@ export type Watcher = {
 
 export async function watch(
   rootDirectory: string,
-  { logger }: { logger?: vite.Logger } = {}
+  {
+    logger,
+    viteUserResolveConfig,
+  }: {
+    logger?: vite.Logger;
+    viteUserResolveConfig?: vite.InlineConfig["resolve"];
+  } = {}
 ): Promise<Watcher> {
-  const ctx = await createContext({ rootDirectory, watch: true });
+  const ctx = await createContext({
+    rootDirectory,
+    watch: true,
+    viteUserResolveConfig,
+  });
   await writeAll(ctx);
   logger?.info(pc.green("generated types"), { timestamp: true, clear: true });
 
@@ -55,11 +65,17 @@ export async function watch(
 async function createContext({
   rootDirectory,
   watch,
+  viteUserResolveConfig,
 }: {
   rootDirectory: string;
   watch: boolean;
+  viteUserResolveConfig?: vite.InlineConfig["resolve"];
 }): Promise<Context> {
-  const configLoader = await createConfigLoader({ rootDirectory, watch });
+  const configLoader = await createConfigLoader({
+    rootDirectory,
+    watch,
+    viteUserResolveConfig,
+  });
   const configResult = await configLoader.getConfig();
 
   if (!configResult.ok) {

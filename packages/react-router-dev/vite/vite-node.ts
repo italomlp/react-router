@@ -15,9 +15,11 @@ export type Context = {
 export async function createContext({
   root,
   mode,
+  viteUserResolveConfig,
 }: {
   root: Vite.UserConfig["root"];
   mode: Vite.ConfigEnv["mode"];
+  viteUserResolveConfig?: Vite.InlineConfig["resolve"];
 }): Promise<Context> {
   await preloadVite();
   const vite = getVite();
@@ -39,6 +41,7 @@ export async function createContext({
     configFile: false,
     envFile: false,
     plugins: [],
+    resolve: viteUserResolveConfig,
   });
   await devServer.pluginContainer.buildStart({});
 
